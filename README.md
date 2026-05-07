@@ -50,11 +50,7 @@ Veja `privacy.md` para texto detalhado.
 
 # Deploy do backend Cloudflare
 
-## 1. Revogue tokens expostos
-
-Se algum token da Cloudflare foi colado em chat, GitHub, print ou qualquer lugar público, revogue-o antes de continuar.
-
-## 2. Instale Node.js
+## 1. Instale Node.js
 
 Instale Node.js LTS. Depois, no terminal:
 
@@ -64,7 +60,7 @@ npm install
 npx wrangler login
 ```
 
-## 3. Crie o banco D1
+## 2. Crie o banco D1
 
 ```bash
 npm run db:create
@@ -87,13 +83,13 @@ database_id = "REPLACE_WITH_D1_DATABASE_ID_AFTER_CREATE"
 
 Isso é configuração de deploy, não código do addon.
 
-## 4. Crie as tabelas
+## 3. Crie as tabelas
 
 ```bash
 npm run db:init
 ```
 
-## 5. Publique o Worker
+## 4. Publique o Worker
 
 ```bash
 npm run deploy
