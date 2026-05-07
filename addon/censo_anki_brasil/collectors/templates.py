@@ -1,6 +1,7 @@
 from aqt import mw
 from ..buckets import bucket_number, bucket_percent, COUNT_BUCKETS_SMALL
 
+
 def collect_templates():
     has_cloze = False
     model_count = 0
@@ -9,12 +10,17 @@ def collect_templates():
     has_js = False
     cloze_notes = 0
     total_notes = 0
+    cloze_model_ids = []
     try:
         models = mw.col.models.all()
         model_count = len(models)
         for m in models:
-            if int(m.get("type", 0)) == 1 or "cloze" in str(m.get("name", "")).lower():
+            is_cloze = int(m.get("type", 0)) == 1 or "cloze" in str(m.get("name", "")).lower()
+            if is_cloze:
                 has_cloze = True
+                mid = m.get("id")
+                if mid is not None:
+                    cloze_model_ids.append(int(mid))
             css = m.get("css", "") or ""
             if len(css.strip()) > 20:
                 has_css = True
@@ -24,7 +30,9 @@ def collect_templates():
                 if "<script" in content.lower() or "javascript:" in content.lower():
                     has_js = True
         total_notes = mw.col.db.scalar("select count() from notes") or 0
-        cloze_notes = mw.col.db.scalar("select count() from notes where mid in (select id from notetypes where json_extract(config, '$.type') = 1)") or 0
+        if cloze_model_ids:
+            placeholders = ",".join("?" for _ in cloze_model_ids)
+            cloze_notes = mw.col.db.scalar(f"select count() from notes where mid in ({placeholders})", *cloze_model_ids) or 0
     except Exception:
         pass
     cloze_pct = 100 * cloze_notes / total_notes if total_notes else None

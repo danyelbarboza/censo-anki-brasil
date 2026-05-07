@@ -35,7 +35,7 @@ def collect_collection():
         "tag_count_bucket": bucket_number(tag_count, COUNT_BUCKETS_MED),
         "new_cards_bucket": bucket_number(new_cards, COUNT_BUCKETS_MED),
         "learning_cards_bucket": bucket_number(learning, COUNT_BUCKETS_MED),
-        "review_cards_bucket": bucket_number(review, CARD_BUCKETS),
+        "cards_in_review_state_bucket": bucket_number(review, CARD_BUCKETS),
         "suspended_cards_bucket": bucket_number(suspended, COUNT_BUCKETS_MED),
         "buried_cards_bucket": bucket_number(buried, COUNT_BUCKETS_MED),
         "due_today_bucket": bucket_number(due_today, COUNT_BUCKETS_MED),

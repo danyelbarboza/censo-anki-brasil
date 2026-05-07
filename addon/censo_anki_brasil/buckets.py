@@ -16,6 +16,7 @@ def bucket_percent(p):
     except Exception:
         return "unknown"
     if p <= 0: return "0%"
+    if p <= 1: return ">0–1%"
     if p <= 10: return "1–10%"
     if p <= 25: return "11–25%"
     if p <= 50: return "26–50%"

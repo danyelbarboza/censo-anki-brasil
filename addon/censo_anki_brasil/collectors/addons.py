@@ -1,25 +1,34 @@
 import json, os
 from aqt import mw
 from ..constants import ADDON_NAME
+from .. import storage
 from ..buckets import bucket_number, COUNT_BUCKETS_SMALL
+
 
 def _addons_dir():
     for attr in ("addonsFolder",):
         try:
             p = getattr(mw.addonManager, attr)()
-            if p and os.path.isdir(p): return p
-        except Exception: pass
+            if p and os.path.isdir(p):
+                return p
+        except Exception:
+            pass
     try:
         p = mw.pm.addonFolder()
-        if p and os.path.isdir(p): return p
-    except Exception: pass
+        if p and os.path.isdir(p):
+            return p
+    except Exception:
+        pass
     return None
+
 
 def _read_json(path):
     try:
-        with open(path, "r", encoding="utf-8") as f: return json.load(f)
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
     except Exception:
         return {}
+
 
 def _disabled_ids():
     try:
@@ -31,6 +40,13 @@ def _disabled_ids():
     except Exception:
         return set()
 
+
+def _is_this_addon(folder_name: str, display_name: str) -> bool:
+    if folder_name == storage.ADDON_MODULE_NAME:
+        return True
+    return str(display_name).strip().casefold() == ADDON_NAME.casefold()
+
+
 def collect_addons():
     base = _addons_dir()
     items = []
@@ -38,14 +54,24 @@ def collect_addons():
     if base:
         for name in sorted(os.listdir(base)):
             path = os.path.join(base, name)
-            if not os.path.isdir(path): continue
-            if name.startswith("__") or name == "censo_anki_brasil": continue
+            if not os.path.isdir(path):
+                continue
+            if name.startswith("__") or name == "censo_anki_brasil":
+                continue
             manifest = _read_json(os.path.join(path, "manifest.json"))
             meta = _read_json(os.path.join(path, "meta.json"))
             display = manifest.get("name") or meta.get("name") or name
-            source = "ankiweb" if name.isdigit() else "local"
+            if _is_this_addon(name, str(display)):
+                continue
+            source = "ankiweb_like" if name.isdigit() else "local"
             enabled = name not in disabled
-            items.append({"id": name if name.isdigit() else None, "folder": name, "name": str(display), "enabled": bool(enabled), "source": source})
+            items.append({
+                "id": name if name.isdigit() else None,
+                "folder": name,
+                "name": str(display),
+                "enabled": bool(enabled),
+                "source": source,
+            })
     return {
         "addon_count_bucket": bucket_number(len(items), COUNT_BUCKETS_SMALL),
         "enabled_addon_count_bucket": bucket_number(sum(1 for x in items if x["enabled"]), COUNT_BUCKETS_SMALL),
