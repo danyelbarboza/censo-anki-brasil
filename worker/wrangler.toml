@@ -1,0 +1,8 @@
+name = "censo-anki-brasil-api"
+main = "src/index.js"
+compatibility_date = "2026-05-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "censo-anki-brasil-db"
+database_id = "4ac3d365-8cfe-420c-929e-54a5dd83ae93"

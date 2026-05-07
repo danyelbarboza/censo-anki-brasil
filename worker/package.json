@@ -1,0 +1,15 @@
+{
+  "name": "censo-anki-brasil-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create censo-anki-brasil-db",
+    "db:init": "wrangler d1 execute censo-anki-brasil-db --remote --file=./schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.89.1"
+  }
+}

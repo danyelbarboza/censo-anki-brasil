@@ -1,0 +1,15 @@
+{
+  "api_base_url": "https://censo-anki-brasil-api.danyelbarboza.workers.dev",
+  "language": "pt_BR",
+  "participation_paused": false,
+  "user_id": "",
+  "profile": {},
+  "profile_updated_at": {},
+  "local_state": {
+    "first_run_completed": false,
+    "sent_surveys": {},
+    "pending_surveys": {},
+    "reminders_shown": {},
+    "last_error": ""
+  }
+}
