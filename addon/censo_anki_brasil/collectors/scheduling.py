@@ -1,5 +1,5 @@
 from aqt import mw
-from ..buckets import bucket_number, bucket_percent, COUNT_BUCKETS_SMALL
+from ..buckets import bucket_number, bucket_percent, bucket_retention, COUNT_BUCKETS_SMALL, NEW_CARDS_PER_DAY_BUCKETS, REVIEWS_LIMIT_BUCKETS
 
 
 def _bucket_retention_value(v):
@@ -7,34 +7,10 @@ def _bucket_retention_value(v):
         pct = float(v) * 100 if float(v) <= 1 else float(v)
     except Exception:
         return "unknown"
-    if pct < 80:
-        return "<80%"
-    if pct < 85:
-        return "80–85%"
-    if pct < 90:
-        return "85–90%"
-    if pct < 95:
-        return "90–95%"
-    return "95%+"
-
+    return bucket_retention(pct)
 
 def _first_number_bucket(n):
-    try:
-        n = int(n)
-    except Exception:
-        return "unknown"
-    if n == 0:
-        return "0"
-    if n <= 10:
-        return "1–10"
-    if n <= 20:
-        return "11–20"
-    if n <= 50:
-        return "21–50"
-    if n <= 100:
-        return "51–100"
-    return "101+"
-
+    return bucket_number(n, NEW_CARDS_PER_DAY_BUCKETS)
 
 def _reviews_limit_bucket(n):
     try:
@@ -43,16 +19,7 @@ def _reviews_limit_bucket(n):
         return "unknown"
     if n <= 0 or n >= 9999:
         return "sem limite"
-    if n <= 100:
-        return "1–100"
-    if n <= 200:
-        return "101–200"
-    if n <= 500:
-        return "201–500"
-    if n <= 1000:
-        return "501–1000"
-    return "1001+"
-
+    return bucket_number(n, REVIEWS_LIMIT_BUCKETS)
 
 def _as_bool_marker(value):
     if isinstance(value, bool):
