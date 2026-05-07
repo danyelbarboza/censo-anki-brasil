@@ -1,6 +1,8 @@
 function safeJson(s) { try { return JSON.parse(s); } catch { return null; } }
 function inc(map, key) { if (key === undefined || key === null || key === "") key = "Não informado"; map[key] = (map[key] || 0) + 1; }
 function topMap(map) { return Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([name,count])=>({name,count})); }
+function addToSet(map, key, value) { map[key] ||= new Set(); if (value) map[key].add(value); }
+function serializeSetCounts(map) { const out = {}; for (const [k, set] of Object.entries(map)) out[k] = set.size; return out; }
 function isCensusAddon(ad) {
   const name = String(ad?.name || "").trim().toLowerCase();
   return name === "censo anki brasil";
@@ -14,10 +16,14 @@ export async function aggregateResults(db) {
     const sid = row.survey_id;
     bySurvey[sid] ||= {
       total_responses: 0,
+      unique_user_ids: new Set(),
+      usage_fingerprints: new Set(),
       addons: {}, fsrs: {}, fsrs_preset_ratio: {}, anki_versions: {}, platforms: {}, countries: {}, states: {}, primary_areas: {}, age: {}, levels: {}, experience: {},
       cards: {}, notes: {}, decks: {}, cards_in_review_state: {}, reviews_30: {}, study_days_30: {}, retention_30: {}, media_images: {}, media_audio: {}, cloze: {}
     };
     const a = bySurvey[sid]; a.total_responses++;
+    if (p.user_id) a.unique_user_ids.add(p.user_id);
+    if (p.analysis?.usage_fingerprint) a.usage_fingerprints.add(p.analysis.usage_fingerprint);
     inc(a.anki_versions, p.environment?.anki_version);
     inc(a.platforms, p.environment?.platform);
     const prof = p.profile_optional?.values || {};
@@ -49,6 +55,8 @@ export async function aggregateResults(db) {
   for (const [sid, a] of Object.entries(bySurvey)) {
     out[sid] = {
       total_responses: a.total_responses,
+      unique_installations: a.unique_user_ids.size,
+      estimated_unique_usage_profiles: a.usage_fingerprints.size,
       top_addons: topMap(a.addons),
       fsrs: topMap(a.fsrs),
       fsrs_enabled_preset_ratio: topMap(a.fsrs_preset_ratio),
@@ -79,9 +87,9 @@ export function resultsHtml(results) {
   const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   let body = `<html><head><meta charset="utf-8"><title>Censo Anki Brasil - Resultados</title><style>body{font-family:system-ui;margin:32px;max-width:1100px}table{border-collapse:collapse;width:100%;margin:16px 0}td,th{border:1px solid #ddd;padding:8px}th{text-align:left;background:#f4f4f4}section{margin-bottom:36px}</style></head><body><h1>Censo Anki Brasil - Resultados públicos</h1>`;
   for (const [sid, data] of Object.entries(results)) {
-    body += `<section><h2>${esc(sid)}</h2><p><b>Total de respostas:</b> ${data.total_responses}</p>`;
+    body += `<section><h2>${esc(sid)}</h2><p><b>Total de respostas:</b> ${data.total_responses}</p><p><b>Instalações únicas:</b> ${data.unique_installations}</p><p><b>Perfis de uso estimados:</b> ${data.estimated_unique_usage_profiles}</p>`;
     for (const key of Object.keys(data)) {
-      if (key === 'total_responses') continue;
+      if (['total_responses','unique_installations','estimated_unique_usage_profiles'].includes(key)) continue;
       body += `<h3>${esc(key)}</h3><table><tr><th>Categoria</th><th>Contagem</th></tr>`;
       for (const item of data[key].slice(0, 50)) body += `<tr><td>${esc(item.name)}</td><td>${item.count}</td></tr>`;
       body += `</table>`;

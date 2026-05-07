@@ -1,6 +1,6 @@
 import { SCHEMA_VERSION, MAX_PAYLOAD_BYTES } from "./config.js";
 
-const ALLOWED_TOP = new Set(["survey_id","schema_version","addon_version","submitted_at_client","mode","user_id","environment","profile_optional","addons","collection","scheduling","activity","templates","media"]);
+const ALLOWED_TOP = new Set(["survey_id","schema_version","addon_version","submitted_at_client","mode","user_id","environment","profile_optional","addons","collection","scheduling","activity","templates","media","analysis"]);
 
 export async function readAndValidateRequest(request) {
   if (request.method !== "POST") return { error: [405, "method_not_allowed"] };
