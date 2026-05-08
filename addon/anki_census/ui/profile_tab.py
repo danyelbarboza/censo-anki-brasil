@@ -76,7 +76,7 @@ class ProfileTab(QWidget):
         combo.setCurrentIndex(i if i >= 0 else 0)
 
     def _country_changed(self):
-        is_br = self.country.currentText() == "Brasil"
+        is_br = self.country.currentText() == "Brazil"
         self.state_label.setVisible(is_br)
         self.state.setVisible(is_br)
         self.state.setEnabled(is_br)
@@ -152,7 +152,7 @@ class ProfileTab(QWidget):
                 seen.add(v)
         data = {
             "country": self.country.currentText() or None,
-            "state": self.state.currentText() if self.country.currentText() == "Brasil" else None,
+            "state": self.state.currentText() if self.country.currentText() == "Brazil" else None,
             "primary_area": primary or None,
             "secondary_areas": secondary,
             "anki_experience": self.experience.currentText() or None,

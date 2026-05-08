@@ -47,7 +47,7 @@ class DeveloperTab(QWidget):
         if self.unlocked:
             self.text.setPlainText(json.dumps(self._payload(), ensure_ascii=False, indent=2))
     def export(self):
-        path, _ = QFileDialog.getSaveFileName(self, "Salvar JSON", "censo-anki-brasil-dev.json", "JSON (*.json)")
+        path, _ = QFileDialog.getSaveFileName(self, "Salvar JSON", "anki-census-dev.json", "JSON (*.json)")
         if path:
             with open(path, "w", encoding="utf-8") as f: f.write(self.text.toPlainText())
     def send_debug(self):

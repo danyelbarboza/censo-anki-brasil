@@ -25,7 +25,7 @@ class CollectedDataTab(QWidget):
     def refresh(self):
         self.text.setPlainText(json.dumps(self._payload(), ensure_ascii=False, indent=2))
     def export(self):
-        path, _ = QFileDialog.getSaveFileName(self, "Exportar JSON", "censo-anki-brasil-preview.json", "JSON (*.json)")
+        path, _ = QFileDialog.getSaveFileName(self, "Exportar JSON", "anki-census-preview.json", "JSON (*.json)")
         if path:
             with open(path, "w", encoding="utf-8") as f:
                 f.write(self.text.toPlainText())

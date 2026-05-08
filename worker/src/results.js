@@ -1,7 +1,7 @@
 function safeJson(s) { try { return JSON.parse(s); } catch { return null; } }
 function inc(map, key) { if (key === undefined || key === null || key === "") key = "Não informado"; map[key] = (map[key] || 0) + 1; }
 function topMap(map) { return Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([name,count])=>({name,count})); }
-function isCensusAddon(ad) { return String(ad?.name || "").trim().toLowerCase() === "censo anki brasil"; }
+function isCensusAddon(ad) { return String(ad?.name || "").trim().toLowerCase() === "anki census"; }
 function parsePercent(value) {
   if (value === undefined || value === null) return null;
   const s = String(value).replace(",", ".").trim();
@@ -145,7 +145,7 @@ export async function aggregateResults(db) {
 
 export function resultsHtml(results) {
   const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-  let body = `<html><head><meta charset="utf-8"><title>Censo Anki Brasil - Resultados</title><style>body{font-family:system-ui;margin:32px;max-width:1100px;background:#fafafa;color:#111827}table{border-collapse:collapse;width:100%;margin:16px 0;background:white}td,th{border:1px solid #e5e7eb;padding:8px}th{text-align:left;background:#f4f4f5}section{margin-bottom:36px}.card{background:white;border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin:12px 0}</style></head><body><h1>Censo Anki Brasil - Resultados públicos</h1>`;
+  let body = `<html><head><meta charset="utf-8"><title>Anki Census - Resultados</title><style>body{font-family:system-ui;margin:32px;max-width:1100px;background:#fafafa;color:#111827}table{border-collapse:collapse;width:100%;margin:16px 0;background:white}td,th{border:1px solid #e5e7eb;padding:8px}th{text-align:left;background:#f4f4f5}section{margin-bottom:36px}.card{background:white;border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin:12px 0}</style></head><body><h1>Anki Census - Resultados públicos</h1>`;
   for (const [sid, data] of Object.entries(results)) {
     body += `<section><h2>${esc(sid)}</h2><div class="card"><p><b>Total de respostas:</b> ${data.total_responses}</p><p><b>Instalações únicas:</b> ${data.unique_installations}</p><p><b>Perfis de uso estimados:</b> ${data.estimated_unique_usage_profiles}</p></div>`;
     for (const key of Object.keys(data)) {

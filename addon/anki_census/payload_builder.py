@@ -5,15 +5,18 @@ from copy import deepcopy
 
 from .constants import ADDON_VERSION, SCHEMA_VERSION
 from .ids import ensure_user_id
-from .storage import utc_now_iso
-from .collectors.environment import collect_environment
+from .storage import load_config
+from .censo_client.payload import enrich_payload
+from .censo_client.version import CLIENT_VERSION
+from .collectors.activity import collect_activity
 from .collectors.addons import collect_addons
 from .collectors.collection import collect_collection
-from .collectors.scheduling import collect_scheduling
-from .collectors.activity import collect_activity
+from .collectors.environment import collect_environment
 from .collectors.media import collect_media
-from .collectors.templates import collect_templates
 from .collectors.profile import collect_profile
+from .collectors.scheduling import collect_scheduling
+from .collectors.templates import collect_templates
+from .storage import utc_now_iso
 
 USAGE_FINGERPRINT_VERSION = "1.1"
 
@@ -34,8 +37,6 @@ def _percent_label_to_float(value):
     if not text.endswith("%"):
         return None
     text = text[:-1].strip()
-    # Exact percentages look like "92.37%" or "92%". Bucket labels such as
-    # "90–95%" or ">0–5%" must stay untouched.
     if "–" in text or "-" in text or text.startswith(">") or text.startswith("<"):
         return None
     try:
@@ -64,20 +65,15 @@ def _stable_percent_bucket(value):
 
 
 def _coarse_count_label_for_hash(value):
-    """Normalize volatile count buckets inside the fingerprint only.
-
-    The public payload remains granular. This function prevents unstable fields
-    such as due_today/learning cards from changing the deduplication hash just
-    because two desktops were opened a few days apart.
-    """
+    """Normalize volatile count buckets inside the fingerprint only."""
     if not isinstance(value, str):
         return value
     if value in {"unknown", "sem limite"}:
         return value
     if value == "0":
         return "0"
-    # Extract the largest numeric value present in a label like "4.001–5.000".
     import re
+
     nums = re.findall(r"\d+(?:\.\d+)?", value)
     if not nums:
         return value
@@ -114,9 +110,6 @@ def _coarse_count_label_for_hash(value):
 def _stabilize_fingerprint_source(source: dict) -> dict:
     stable = deepcopy(source)
 
-    # Exact retention values are excellent for analysis but too sensitive for
-    # a cross-device deduplication hash. Keep exact values in the payload and
-    # use 5-point buckets only inside the fingerprint source.
     scheduling = stable.get("scheduling") or {}
     if "desired_retention_bucket" in scheduling:
         scheduling["desired_retention_bucket"] = _stable_percent_bucket(scheduling.get("desired_retention_bucket"))
@@ -127,8 +120,6 @@ def _stabilize_fingerprint_source(source: dict) -> dict:
         if isinstance(period, dict) and "study_days_bucket" in period:
             period["study_days_bucket"] = _coarse_count_label_for_hash(period.get("study_days_bucket"))
 
-    # These collection fields can legitimately drift between two desktops opened
-    # days apart. They still enter the hash, but in a coarser/stable form.
     collection = stable.get("collection") or {}
     for key in ("due_today_bucket", "learning_cards_bucket"):
         if key in collection:
@@ -138,26 +129,6 @@ def _stabilize_fingerprint_source(source: dict) -> dict:
 
 
 def _build_usage_fingerprint_source(payload: dict) -> dict:
-    """
-    Fingerprint rules requested for deduplication across multiple desktops.
-
-    Excluded:
-    - survey_id
-    - profile_optional / profile, including updated_at
-    - activity.last_30_days
-    - user_id, submitted_at_client, mode
-    - addon_version, schema_version
-    - environment
-    - addons
-    - analysis
-
-    Included:
-    - collection
-    - scheduling
-    - activity without last_30_days, currently last_180_days
-    - templates
-    - media
-    """
     activity = deepcopy(payload.get("activity") or {})
     activity.pop("last_30_days", None)
     activity.pop("semester_months", None)
@@ -181,7 +152,8 @@ def _build_analysis(payload: dict) -> dict:
 
 
 def build_payload(survey_id: str, mode: str = "real") -> dict:
-    payload = {
+    config = load_config()
+    base_payload = {
         "survey_id": survey_id,
         "schema_version": SCHEMA_VERSION,
         "addon_version": ADDON_VERSION,
@@ -197,7 +169,12 @@ def build_payload(survey_id: str, mode: str = "real") -> dict:
         "templates": collect_templates(),
         "media": collect_media(),
     }
-
-    # Add this as the final step so later collector changes cannot overwrite it.
+    payload = enrich_payload(
+        base_payload,
+        config,
+        survey_id=survey_id,
+        primary_source="anki-census-standalone",
+    )
     payload["analysis"] = _build_analysis(payload)
+    payload["client_version"] = CLIENT_VERSION
     return payload

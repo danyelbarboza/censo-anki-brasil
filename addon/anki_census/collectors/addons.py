@@ -56,7 +56,7 @@ def collect_addons():
             path = os.path.join(base, name)
             if not os.path.isdir(path):
                 continue
-            if name.startswith("__") or name == "censo_anki_brasil":
+            if name.startswith("__") or name == "anki_census":
                 continue
             manifest = _read_json(os.path.join(path, "manifest.json"))
             meta = _read_json(os.path.join(path, "meta.json"))

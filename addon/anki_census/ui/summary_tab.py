@@ -694,7 +694,7 @@ class SummaryTab(QWidget):
         hero = QFrame(); hero.setObjectName("heroBox")
         h = QVBoxLayout(hero); h.setContentsMargins(18, 16, 18, 16)
         title = QLabel("Meu Anki"); title.setObjectName("heroTitle")
-        subtitle = QLabel("Sua retrospectiva do Anki: ritmo de estudo, retenção, setup, comunidade e os dados que entram no Censo Anki Brasil.")
+        subtitle = QLabel("Sua retrospectiva do Anki: ritmo de estudo, retenção, setup, comunidade e os dados que entram no Anki Census.")
         subtitle.setObjectName("heroSubtitle"); subtitle.setWordWrap(True)
         meta = QLabel(f"Coleta <b>{status}</b> · Janela <b>{info['start']} a {info['end']}</b> · Último envio <b>{sent or 'ainda não enviado'}</b>")
         meta.setObjectName("metaText"); meta.setWordWrap(True)
@@ -995,14 +995,14 @@ class SummaryTab(QWidget):
         badge = self._profile_cache(p).get("badge", "Perfil") if p else "Perfil"
         top_reviews = _top_percent_for_bucket(a30.get("reviews_bucket"), self._global_comparison().get("distributions", {}).get("reviews_last_30_days"))
         return (
-            "Meu Anki — Censo Anki Brasil\n"
+            "Meu Anki — Anki Census\n"
             f"Perfil: {badge}\n"
             f"Cards: {c.get('card_count_bucket', 'sem dados')}\n"
             f"Reviews recentes: {a30.get('reviews_bucket', 'sem dados')}\n"
             f"Retenção: {a30.get('retention_bucket', 'sem dados')}\n"
             f"Addons ativos: {addons.get('enabled_addon_count_bucket', 'sem dados')}\n"
             + (f"Top comunidade: {top_reviews}% em reviews\n" if top_reviews else "") +
-            "Projeto: Censo Anki Brasil"
+            "Projeto: Anki Census"
         )
 
     def _copy_share_card(self):
@@ -1115,7 +1115,7 @@ class SummaryTab(QWidget):
         painter.drawText(panel.left() + 42, panel.top() + 54, "Meu Anki | 2026.1")
         painter.setPen(muted)
         painter.setFont(QFont("", 13, QFont.Weight.DemiBold))
-        painter.drawText(panel.left() + 42, panel.top() + 80, "Seu Wrapped pessoal do Censo Anki Brasil")
+        painter.drawText(panel.left() + 42, panel.top() + 80, "Seu Wrapped pessoal do Anki Census")
 
         # badge block
         badge_rect = QRect(panel.left() + 34, panel.top() + 106, panel.width() - 68, 108)
@@ -1209,7 +1209,7 @@ class SummaryTab(QWidget):
         footer_y = panel.bottom() - 36
         painter.setPen(muted)
         painter.setFont(QFont("", 10))
-        painter.drawText(panel.left() + 38, footer_y, "censo-anki-brasil · github.com/danyelbarboza/censo-anki-brasil")
+        painter.drawText(panel.left() + 38, footer_y, "anki-census · github.com/danyelbarboza/anki-census")
 
     def _export_card(self):
         path, _ = QFileDialog.getSaveFileName(self, "Salvar card", "meu-anki-card.png", "PNG (*.png);;JPEG (*.jpg)")

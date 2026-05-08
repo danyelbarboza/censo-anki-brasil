@@ -1,13 +1,13 @@
-# Censo Anki Brasil
+# Anki Census
 
 Addon para Anki Desktop que gera um painel local de estatísticas do usuário e, nas janelas semestrais do censo, envia dados agregados para uma API pública de resultados.
 
 A ideia do projeto é ter duas camadas:
 
 1. **Meu Anki**: um painel no próprio Anki Desktop com métricas da coleção, atividade recente, FSRS, mídia, addons e comparações com a comunidade quando houver dados públicos suficientes.
-2. **Censo Anki Brasil**: uma coleta semestral de dados agregados para acompanhar como usuários brasileiros utilizam o Anki e quais padrões aparecem ao longo do tempo.
+2. **Anki Census**: uma coleta semestral de dados agregados para acompanhar como usuários globais utilizam o Anki e quais padrões aparecem ao longo do tempo.
 
-Autor: **Danyel Barboza — Comunidade Anki Brasil**
+Autor: **Danyel Barboza — Anki Community**
 
 ---
 
@@ -26,8 +26,8 @@ A tela principal, **Meu Anki**, mostra um resumo técnico do uso local do Anki:
 - perfil de uso gerado a partir dos dados agregados;
 - comparações com a comunidade quando os resultados públicos estiverem disponíveis.
 
-<img src="screenshots/meu-anki.png" alt="Tela principal do Meu Anki - Censo Anki Brasil" width="800">
-<img src="screenshots/perfil.png" alt="Tela de perfil do Censo Anki Brasil" width="800">
+<img src="screenshots/meu-anki.png" alt="Tela principal do Meu Anki - Anki Census" width="800">
+<img src="screenshots/perfil.png" alt="Tela de perfil do Anki Census" width="800">
 
 Depois da coleta, o painel também pode exibir percentis e comparações do usuário com a base agregada do censo, como:
 
@@ -52,7 +52,7 @@ privacy.md  Política de privacidade do projeto
 O repositório também contém o arquivo:
 
 ```text
-dicionario-dados-censo-anki-brasil.ods
+dicionario-dados-anki-census.ods
 ```
 
 Esse dicionário de dados documenta os campos enviados pelo addon, seus tipos, exemplos, origem de coleta e observações de privacidade.
@@ -82,8 +82,8 @@ O censo é semestral.
 Exemplos de `survey_id`:
 
 ```text
-censo-anki-brasil-2026-1
-censo-anki-brasil-2026-2
+anki-census-2026-1
+anki-census-2026-2
 ```
 
 Durante a janela de coleta, o addon envia automaticamente uma resposta por instalação/usuário local, desde que a participação não esteja pausada nas configurações.
@@ -141,7 +141,7 @@ A maioria dos campos numéricos é enviada em faixas. Alguns percentuais, como r
 O dicionário completo dos campos está em:
 
 ```text
-dicionario-dados-censo-anki-brasil.ods
+dicionario-dados-anki-census.ods
 ```
 
 ---
@@ -265,7 +265,7 @@ Se for necessário usar outra API, há duas opções.
 No Anki Desktop:
 
 ```text
-Ferramentas → Censo Anki Brasil → Configurações → URL da API
+Ferramentas → Anki Census → Configurações → URL da API
 ```
 
 ### No build do pacote
@@ -273,7 +273,7 @@ Ferramentas → Censo Anki Brasil → Configurações → URL da API
 Na raiz do projeto:
 
 ```bash
-python scripts/build_addon.py --api-url "https://censo-anki-brasil-api.SEUSUBDOMINIO.workers.dev"
+python scripts/build_addon.py --api-url "https://anki-census-api.SEUSUBDOMINIO.workers.dev"
 ```
 
 O arquivo `.ankiaddon` será criado em:
@@ -289,7 +289,7 @@ dist/
 Na raiz do projeto:
 
 ```bash
-python scripts/build_addon.py --api-url "https://censo-anki-brasil-api.SEUSUBDOMINIO.workers.dev"
+python scripts/build_addon.py --api-url "https://anki-census-api.SEUSUBDOMINIO.workers.dev"
 ```
 
 Depois, envie o arquivo `.ankiaddon` gerado em `dist/` para o AnkiWeb Add-ons.
@@ -328,3 +328,9 @@ O projeto é aberto para auditoria. A proposta é manter público:
 - política de privacidade;
 - endpoints públicos de resultado;
 - lógica geral de coleta e agregação.
+
+## From Anki Census to Anki Census
+
+This project started as Anki Census, focused on understanding Anki usage in Brazil. It is now being expanded into Anki Census, a global census of Anki usage and add-on adoption.
+
+Existing users and configurations remain supported.

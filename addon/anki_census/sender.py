@@ -3,7 +3,7 @@ import urllib.request
 import urllib.error
 from .storage import load_config
 
-CLIENT_NAME = "CensoAnkiBrasilAddon"
+CLIENT_NAME = "AnkiCensusAddon"
 
 
 def _base_url():
@@ -22,7 +22,7 @@ def post_json(path: str, payload: dict, timeout=20) -> dict:
         headers={
             "Content-Type": "application/json; charset=utf-8",
             "User-Agent": f"{CLIENT_NAME}/{payload.get('addon_version','unknown')}",
-            "X-Census-Client": "censo-anki-brasil-addon",
+            "X-Census-Client": "anki-census-addon",
             "X-Census-Schema": payload.get("schema_version", ""),
         },
         method="POST",
@@ -45,7 +45,7 @@ def get_json(path: str, timeout=12) -> dict:
         headers={
             "Accept": "application/json",
             "User-Agent": f"{CLIENT_NAME}/results",
-            "X-Census-Client": "censo-anki-brasil-addon",
+            "X-Census-Client": "anki-census-addon",
         },
         method="GET",
     )

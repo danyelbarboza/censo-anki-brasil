@@ -1,5 +1,5 @@
 {
-  "api_base_url": "https://censo-anki-brasil-api.danyelbarboza.workers.dev",
+  "api_base_url": "https://anki-census-api.danyelbarboza.workers.dev",
   "language": "pt_BR",
   "participation_paused": false,
   "user_id": "",

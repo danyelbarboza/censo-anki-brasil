@@ -8,7 +8,7 @@ class SettingsTab(QWidget):
         form = QFormLayout()
         self.api_url = QLineEdit()
         self.lang = QComboBox(); self.lang.addItems(["pt_BR", "en"])
-        self.paused = QCheckBox("Pausar participação no Censo Anki Brasil")
+        self.paused = QCheckBox("Pausar participação no Anki Census")
         form.addRow("URL da API", self.api_url)
         form.addRow("Idioma", self.lang)
         form.addRow(self.paused)

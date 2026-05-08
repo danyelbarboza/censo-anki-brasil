@@ -14,7 +14,7 @@ _window = None
 class MainWindow(QDialog):
     def __init__(self, parent=None, initial_tab=None):
         super().__init__(parent)
-        self.setWindowTitle("Censo Anki Brasil")
+        self.setWindowTitle("Anki Census")
         self.resize(980, 720)
         self.setMinimumSize(720, 520)
         self.setSizeGripEnabled(True)

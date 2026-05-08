@@ -1,47 +1,48 @@
-# Privacidade - Censo Anki Brasil
+# Privacy - Anki Census
 
-O Censo Anki Brasil coleta dados agregados e técnicos para entender como a comunidade usa o Anki e seus addons.
+Anki Census collects aggregate and technical data to understand how the global Anki community uses Anki and add-ons.
 
-## O que é enviado
+## What is sent
 
-- ID anônimo local de 10 caracteres
-- Versão do Anki
-- Sistema operacional
-- Lista de addons instalados, ativos e desativados
-- Estatísticas da coleção em faixas
-- Uso de FSRS e agendamento em faixas
-- Atividade nos últimos 30 e 180 dias em faixas
-- Perfil opcional preenchido pelo usuário
-- Datas de atualização de cada campo do perfil
+- Local anonymous 10-character ID
+- Anki version
+- Operating system
+- Installed add-ons list, including enabled/disabled state
+- Collection statistics in buckets
+- FSRS and scheduling usage in buckets
+- Activity over recent periods in buckets
+- Optional profile data provided by the user
+- Per-field profile update timestamps
 
-## O que não é enviado
+## What is not sent
 
-- Conteúdo dos cards
-- Conteúdo das notas
-- Nomes de decks
-- Nomes de tags
-- Nomes de tipos de nota
-- Nomes de campos
-- Nomes de arquivos de mídia
-- E-mail
-- Nome real
-- Caminho local da coleção
+- Card content
+- Note content
+- Deck names
+- Tag names
+- Note type names
+- Field names
+- Media file names
+- Email
+- Real name
+- AnkiWeb login
+- Local collection paths
 
-## Envio automático
+## Automatic submission
 
-Durante as janelas semestrais de coleta, o addon envia os dados automaticamente se a participação não estiver pausada.
+During semester windows, the add-on sends data automatically if participation is not paused.
 
-Janelas:
+Windows:
 
-- 01/06 a 10/06
-- 10/12 a 20/12
+- 01/06 to 10/06
+- 10/12 to 20/12
 
-## Pausar participação
+## Pause participation
 
-O usuário pode pausar a participação em:
+The user can pause participation in:
 
 ```text
-Ferramentas → Censo Anki Brasil → Configurações
+Tools -> Anki Census -> Settings
 ```
 
-Enquanto a participação estiver pausada, nenhum dado será enviado.
+While participation is paused, no data is sent.

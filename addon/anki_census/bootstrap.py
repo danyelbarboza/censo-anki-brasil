@@ -2,21 +2,21 @@ from aqt import mw
 from aqt.qt import QAction, QTimer
 from . import storage
 from .constants import ADDON_NAME
-from .ids import ensure_user_id
 from .storage import load_config, mark_first_run_completed
 from .i18n import t
+from .censo_client import init_censo_client
 
 
 def _open_main_window(initial_tab=None):
-    # Keep this import relative to the installed add-on package.
-    # Anki installs add-ons under a numeric folder, so absolute imports like
-    # `censo_anki_brasil...` may fail depending on sys.path.
+    """Open the main window using a relative import compatible with Anki add-on folders."""
     from .ui.main_window import show_main_window
     show_main_window(initial_tab=initial_tab)
 
 
 def _welcome_if_needed():
+    """Show the first-run notice once and guide the user to the profile tab."""
     from aqt.qt import QMessageBox
+
     cfg = load_config()
     if cfg.get("local_state", {}).get("first_run_completed"):
         return False
@@ -28,16 +28,26 @@ def _welcome_if_needed():
 
 
 def init(addon_module_name: str):
+    """Initialize standalone mode while delegating singleton and global config to censo_client."""
     storage.set_addon_module_name(addon_module_name)
-    ensure_user_id()
+
     action = QAction(ADDON_NAME, mw)
     action.triggered.connect(lambda: _open_main_window())
     mw.form.menuTools.addAction(action)
 
-    def later():
-        first = _welcome_if_needed()
-        if not first:
-            from .scheduler import run_startup_tasks
-            run_startup_tasks()
+    def startup():
+        def later():
+            first = _welcome_if_needed()
+            if not first:
+                from .scheduler import run_startup_tasks
 
-    QTimer.singleShot(1500, later)
+                run_startup_tasks()
+
+        QTimer.singleShot(1500, later)
+
+    init_censo_client(
+        source_addon_id="anki-census-standalone",
+        source_addon_name=ADDON_NAME,
+        source_addon_version=storage.load_config().get("addon_version", "0.1.12"),
+        startup_callback=startup,
+    )

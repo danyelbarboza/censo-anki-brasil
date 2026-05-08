@@ -1,8 +1,9 @@
-ADDON_NAME = "Censo Anki Brasil"
+ADDON_NAME = "Anki Census"
+LEGACY_ADDON_NAME = "Anki Census"
 ADDON_VERSION = "0.1.12"
 SCHEMA_VERSION = "1.0.0"
-AUTHOR = "Danyel Barboza - Comunidade Anki Brasil"
-DEFAULT_API_BASE_URL = "https://censo-anki-brasil-api.danyelbarboza.workers.dev"
+AUTHOR = "Danyel Barboza - Anki Community"
+DEFAULT_API_BASE_URL = "https://anki-census-api.danyelbarboza.workers.dev"
 DEV_PASSWORD = "4599"
 USER_ID_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 USER_ID_LENGTH = 10
@@ -18,7 +19,7 @@ PRIMARY_AREAS = [
     "Outro", "Prefiro não informar"
 ]
 COUNTRIES = [
-    "", "Brasil", "Portugal", "Angola", "Moçambique", "Cabo Verde", "Guiné-Bissau",
+    "", "Brazil", "Portugal", "Angola", "Moçambique", "Cabo Verde", "Guiné-Bissau",
     "São Tomé e Príncipe", "Timor-Leste", "Estados Unidos", "Canadá", "Reino Unido",
     "Alemanha", "França", "Espanha", "Itália", "Argentina", "Chile", "Uruguai",
     "Paraguai", "Outro país", "Prefiro não informar"
