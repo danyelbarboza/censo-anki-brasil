@@ -1,35 +1,59 @@
 ﻿# Embedding Settings Tab Recommendation
 
-This note describes the recommended way to expose Anki Census controls in any host add-on.
+This note describes the official, reusable way to expose Anki Census controls in host add-ons.
 
-## Goal
+## Official approach
 
-Keep integration zero-config while giving users clear control over global participation.
+Use the built-in reusable widget from `censo_client`:
 
-## Recommended UI
+- `CensusSettingsTab`
+- `CensusTabAdapter`
 
-Create a dedicated **Anki Census** tab in your existing settings/config window.
+This is the same behavior pattern validated in Dynamic Deadline.
 
-Inside that tab, keep the UI minimal:
+## Minimal integration
 
-1. One short description line
-2. One checkbox: "Pause participation globally"
-3. One button: "View census status"
+```python
+from .censo_client import init_censo_client, CensusSettingsTab
 
-Do not build a heavy standalone UI unless your add-on specifically needs it.
+censo = init_censo_client(
+    source_addon_id="my-addon-id",
+    source_addon_name="My Add-on",
+    source_addon_version="1.0.0",
+)
 
-## Suggested behavior
+# Inside your config dialog setup:
+self.tabs = QTabWidget()
+self.main_tab = QWidget()
+self.census_tab = CensusSettingsTab(censo_client=censo)
 
-- Read current state using `is_participation_paused()` when opening settings.
-- Persist user choice with `set_participation_paused(paused)` when saving settings.
-- In "View census status", show:
-  - pause state
-  - `get_privacy_summary()`
-  - `get_current_payload_preview()`
+self.tabs.addTab(self.main_tab, "Settings")
+self.tabs.addTab(self.census_tab, "Anki Census")
+```
+
+## What this tab includes
+
+- Global participation toggle (`Pause participation globally`)
+- Status line (active/paused/unavailable)
+- Status preview modal (summary + payload preview)
+- Developer unlock area (password `4599`)
+- Developer actions:
+  - View JSON
+  - Copy JSON
+  - Save JSON
+  - Send test
+  - Reset local submission state
+
+## Why this is recommended
+
+- Zero extra UI work for each add-on
+- Consistent UX across all add-ons
+- Same debug workflow as the validated Dynamic Deadline integration
+- Global opt-out and global singleton behavior remain centralized in `censo_client`
 
 ## Fail-safe requirement
 
-Initialization and UI actions must never break the host add-on:
+Keep host add-ons resilient if census initialization fails:
 
 ```python
 try:
@@ -39,11 +63,12 @@ except Exception:
     censo = None
 ```
 
-If `censo is None`, disable census controls and show a short "client unavailable" message.
+If `censo is None`, keep the host add-on fully functional and show a short client-unavailable state in the tab.
 
-## UX constraints
+## Host add-on responsibility
 
-- Keep copy short.
-- Do not require manual setup from end users.
-- Respect global opt-out across all integrated add-ons.
-- Avoid duplicate hooks/timers/submissions; rely on `init_censo_client()` singleton behavior.
+This module provides UI and client behavior. The host add-on remains responsible for:
+
+- creating/opening its own config window
+- adding the census widget as a dedicated tab
+- handling host-specific translations if needed

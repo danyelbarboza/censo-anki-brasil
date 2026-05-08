@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Set
+from typing import Callable, Optional, Set
 
 
 @dataclass
@@ -20,7 +20,7 @@ class GlobalCollector:
         """Track one participant addon in this Anki session."""
         self.registered_sources.add(source_id)
 
-    def run_startup_once(self, callback: Callable[[], None] | None) -> bool:
+    def run_startup_once(self, callback: Optional[Callable[[], None]]) -> bool:
         """Run callback only once, returning True when callback is executed."""
         if self.startup_started:
             return False

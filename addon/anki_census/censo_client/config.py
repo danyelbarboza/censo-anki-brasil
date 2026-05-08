@@ -6,15 +6,24 @@ import json
 import os
 import secrets
 import tempfile
+import hashlib
+import base64
 from copy import deepcopy
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 try:
     from aqt import mw
 except Exception:  # pragma: no cover - used only outside Anki runtime.
     mw = None
 
-from ..constants import USER_ID_ALPHABET, USER_ID_LENGTH
+try:
+    from ..constants import USER_ID_ALPHABET, USER_ID_LENGTH
+except Exception:
+    USER_ID_ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789"
+    USER_ID_LENGTH = 24
+
+BACKEND_USER_ID_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+BACKEND_USER_ID_LENGTH = 10
 from .identity import normalize_source_id, utc_now_iso
 from .version import CLIENT_VERSION
 
@@ -25,6 +34,7 @@ CONFIG_FILENAME = "config.json"
 DEFAULT_GLOBAL_CONFIG: Dict[str, Any] = {
     "schema_version": 1,
     "anonymous_user_id": "",
+    "user_id": "",
     "participation_paused": False,
     "notice_seen": False,
     "first_notice_at": None,
@@ -72,7 +82,7 @@ def _merge(default: Dict[str, Any], actual: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def _read_json(path: str) -> Dict[str, Any] | None:
+def _read_json(path: str) -> Optional[Dict[str, Any]]:
     """Read JSON safely and return None on missing/corrupted content."""
     if not os.path.exists(path):
         return None
@@ -107,6 +117,28 @@ def _ensure_anonymous_id(config: Dict[str, Any]) -> None:
     config["anonymous_user_id"] = "".join(secrets.choice(USER_ID_ALPHABET) for _ in range(USER_ID_LENGTH))
 
 
+def _derive_backend_user_id(seed: str) -> str:
+    """Derive a deterministic backend-compatible user id (A-Z2-9, len 10) from any seed string."""
+    digest = hashlib.sha256(str(seed).encode("utf-8")).digest()
+    token = base64.b32encode(digest).decode("ascii").replace("=", "")
+    normalized = "".join(ch for ch in token if ch.isalnum()).upper()
+    normalized = normalized.replace("0", "2").replace("1", "2")
+    if len(normalized) >= BACKEND_USER_ID_LENGTH:
+        return normalized[:BACKEND_USER_ID_LENGTH]
+    padding = "".join(secrets.choice(BACKEND_USER_ID_ALPHABET) for _ in range(BACKEND_USER_ID_LENGTH))
+    return (normalized + padding)[:BACKEND_USER_ID_LENGTH]
+
+
+def _ensure_backend_user_id(config: Dict[str, Any]) -> None:
+    """Guarantee the strict backend `user_id` format expected by the worker validation."""
+    current = str(config.get("user_id", "") or "").strip().upper()
+    if len(current) == BACKEND_USER_ID_LENGTH and all(ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ23456789" for ch in current):
+        config["user_id"] = current
+        return
+    seed = str(config.get("anonymous_user_id", "") or "") or "".join(secrets.choice(USER_ID_ALPHABET) for _ in range(USER_ID_LENGTH))
+    config["user_id"] = _derive_backend_user_id(seed)
+
+
 def get_shared_config_path() -> str:
     """Resolve the active shared config path, preferring the new directory with migration."""
     new_dir, old_dir = _shared_dir_candidates()
@@ -119,6 +151,7 @@ def get_shared_config_path() -> str:
         old_payload = _read_json(old_path) or {}
         merged = _merge(DEFAULT_GLOBAL_CONFIG, old_payload)
         _ensure_anonymous_id(merged)
+        _ensure_backend_user_id(merged)
         _atomic_write_json(new_path, merged)
         return new_path
     return new_path
@@ -130,6 +163,7 @@ def load_global_config() -> Dict[str, Any]:
     payload = _read_json(config_path) or {}
     merged = _merge(DEFAULT_GLOBAL_CONFIG, payload)
     _ensure_anonymous_id(merged)
+    _ensure_backend_user_id(merged)
     if merged.get("client_version") != CLIENT_VERSION:
         merged["client_version"] = CLIENT_VERSION
     return merged
@@ -139,6 +173,7 @@ def save_global_config(config: Dict[str, Any]) -> None:
     """Persist global config atomically."""
     normalized = _merge(DEFAULT_GLOBAL_CONFIG, config or {})
     _ensure_anonymous_id(normalized)
+    _ensure_backend_user_id(normalized)
     normalized["client_version"] = CLIENT_VERSION
     _atomic_write_json(get_shared_config_path(), normalized)
 

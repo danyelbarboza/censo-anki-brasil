@@ -5,6 +5,7 @@ PUBLIC_PROJECT_DESCRIPTION = "A global, privacy-conscious census of Anki usage a
 LEGACY_PROJECT_NAME = "Anki Census"
 
 CLIENT_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.0.0"
 PROJECT_KEY = "anki_census"
 LEGACY_PROJECT_KEY = "anki_census_legacy"
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Optional
 
 try:
     from aqt import mw
@@ -13,8 +13,9 @@ except Exception:  # pragma: no cover - used only outside Anki runtime.
 from .collector import GlobalCollector
 from .config import load_global_config, register_source, save_global_config
 from .identity import normalize_source_id
-from .payload import build_payload_preview
+from .payload import build_payload_preview, current_survey_id
 from .privacy import build_privacy_summary
+from .transport import can_submit_survey, mark_submitted, submit_debug_payload, submit_payload
 from .version import (
     NEW_GLOBAL_COLLECTOR_ATTR,
     NEW_GLOBAL_STATE_ATTR,
@@ -47,11 +48,45 @@ class CensoClient:
         return build_privacy_summary(load_global_config())
 
     def get_current_payload_preview(self, survey_id: str = "anki-census-preview") -> Dict[str, Any]:
-        """Return a minimal payload preview with source and project metadata."""
+        """Return the current payload preview with census metadata and lightweight aggregate stats."""
         config = load_global_config()
         collector = _get_global_collector()
         primary_source = collector.primary_source if collector else self.source_addon_id
         return build_payload_preview(config, survey_id=survey_id, primary_source=primary_source)
+
+    def get_current_survey_payload(self) -> Dict[str, Any]:
+        """Return a payload preview using the active semester survey id."""
+        return self.get_current_payload_preview(survey_id=current_survey_id())
+
+    def send_debug_payload(self) -> Dict[str, Any]:
+        """Send current semester payload to the debug endpoint and return server response."""
+        payload = self.get_current_survey_payload()
+        payload["mode"] = "developer_test"
+        return submit_debug_payload(payload)
+
+    def send_real_payload(self) -> Dict[str, Any]:
+        """Send one real census payload per survey id, respecting global opt-out and submission marker."""
+        config = load_global_config()
+        if bool(config.get("participation_paused", False)):
+            return {"ok": False, "error": "participation_paused"}
+
+        payload = self.get_current_survey_payload()
+        payload["mode"] = "real"
+        survey_id = str(payload.get("survey_id", "") or "")
+        if not can_submit_survey(config, survey_id):
+            return {"ok": False, "error": "already_submitted", "survey_id": survey_id}
+
+        result = submit_payload(payload)
+        if bool(result.get("ok", False)):
+            mark_submitted(config, survey_id, self.source_addon_id)
+            save_global_config(config)
+        return result
+
+    def reset_local_submission_state(self) -> None:
+        """Clear local survey submission markers to allow manual re-tests across integrations."""
+        config = load_global_config()
+        config["last_submission"] = {}
+        save_global_config(config)
 
 
 def _get_mw() -> Any:
@@ -79,7 +114,7 @@ def _set_runtime_alias(value: Any, *names: str) -> None:
         setattr(anki_mw, name, value)
 
 
-def _get_global_collector() -> GlobalCollector | None:
+def _get_global_collector() -> Optional[GlobalCollector]:
     """Get existing collector from new/legacy runtime markers."""
     existing = _get_runtime_attr(NEW_GLOBAL_COLLECTOR_ATTR, OLD_GLOBAL_COLLECTOR_ATTR)
     if existing:
@@ -146,7 +181,7 @@ def init_censo_client(
     source_addon_id: str,
     source_addon_name: str,
     source_addon_version: str,
-    startup_callback: Callable[[], None] | None = None,
+    startup_callback: Optional[Callable[[], None]] = None,
 ) -> CensoClient:
     """Initialize Anki Census idempotently and register the caller as a source addon."""
     source_id = normalize_source_id(source_addon_id)
