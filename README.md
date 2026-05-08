@@ -1,58 +1,212 @@
 # Censo Anki Brasil
 
-Addon para Anki Desktop + API Cloudflare Worker/D1 para coletar, duas vezes por ano, estatísticas agregadas sobre uso do Anki e addons na comunidade Anki Brasil.
+Addon para Anki Desktop que gera um painel local de estatísticas do usuário e, nas janelas semestrais do censo, envia dados agregados para uma API pública de resultados.
 
-Autor: **Danyel Barboza - Comunidade Anki Brasil**
+A ideia do projeto é ter duas camadas:
 
-## O que o projeto contém
+1. **Meu Anki**: um painel no próprio Anki Desktop com métricas da coleção, atividade recente, FSRS, mídia, addons e comparações com a comunidade quando houver dados públicos suficientes.
+2. **Censo Anki Brasil**: uma coleta semestral de dados agregados para acompanhar como usuários brasileiros utilizam o Anki e quais padrões aparecem ao longo do tempo.
+
+Autor: **Danyel Barboza — Comunidade Anki Brasil**
+
+---
+
+## Visão geral
+
+A tela principal, **Meu Anki**, mostra um resumo técnico do uso local do Anki:
+
+- quantidade aproximada de cards, notas, decks, tags e tipos de nota;
+- atividade recente de revisão;
+- retenção nos últimos períodos;
+- dias estudados;
+- uso de FSRS;
+- distribuição de botões (`Again`, `Hard`, `Good`, `Easy`);
+- volume e composição de mídia;
+- addons instalados;
+- perfil de uso gerado a partir dos dados agregados;
+- comparações com a comunidade quando os resultados públicos estiverem disponíveis.
+
+Depois da coleta, o painel também pode exibir percentis e comparações do usuário com a base agregada do censo, como:
+
+- posição em reviews recentes;
+- posição em tempo de estudo;
+- posição em tamanho da coleção;
+- comparação de retenção;
+- comparação por estado, região e área de estudo;
+- uso de addons em relação aos addons mais comuns da comunidade.
+
+---
+
+## Estrutura do projeto
 
 ```text
 addon/      Addon modular do Anki Desktop
-worker/     API Cloudflare Worker + banco D1
+worker/     API Cloudflare Worker + banco Cloudflare D1
 scripts/    Script de empacotamento do addon
-privacy.md  Texto de privacidade para GitHub/AnkiWeb
+privacy.md  Política de privacidade do projeto
 ```
+
+O repositório também contém o arquivo:
+
+```text
+dicionario-dados-censo-anki-brasil.ods
+```
+
+Esse dicionário de dados documenta os campos enviados pelo addon, seus tipos, exemplos, origem de coleta e observações de privacidade.
+
+---
 
 ## Requisito de versão
 
 - Anki Desktop **24.06+**
-- Windows, macOS e Linux
+- Windows, macOS ou Linux
 
-O addon não roda no AnkiWeb, AnkiDroid ou AnkiMobile. Ele coleta quando a pessoa abre o **Anki Desktop**.
+O addon roda no **Anki Desktop**. Ele não roda diretamente no AnkiWeb, AnkiDroid ou AnkiMobile.
+
+Dados de revisão feitos em outros dispositivos podem aparecer no painel se estiverem sincronizados com a coleção local do Anki Desktop.
+
+---
 
 ## Janelas de coleta
 
-- 01/06 a 10/06
-- 10/12 a 20/12
+O censo é semestral.
 
-IDs gerados:
+```text
+01/06 a 10/06
+10/12 a 20/12
+```
+
+Exemplos de `survey_id`:
 
 ```text
 censo-anki-brasil-2026-1
 censo-anki-brasil-2026-2
 ```
 
-## Comportamento
+Durante a janela de coleta, o addon envia automaticamente uma resposta por instalação/usuário local, desde que a participação não esteja pausada nas configurações.
 
-- Primeira abertura: mostra explicação e abre o perfil.
-- 10 dias antes do censo: mostra lembrete gentil para atualizar o perfil.
-- No início da coleta: mostra novo lembrete gentil para manter o perfil atualizado.
-- Durante a janela: envia automaticamente, sem perguntar.
-- Uma resposta por usuário/censo.
-- Se falhar, tenta de novo silenciosamente na próxima abertura durante a janela.
-- O usuário pode pausar a participação nas configurações.
+Se o envio falhar, o addon tenta novamente em uma próxima abertura do Anki Desktop dentro da janela de coleta.
+
+---
+
+## Tela principal: Meu Anki
+
+A aba **Meu Anki** é o painel principal do addon.
+
+Ela mostra dados locais do usuário e, quando a API pública já tiver resultados suficientes, adiciona comparações com a comunidade.
+
+Exemplos de leituras possíveis:
+
+```text
+Você está no top X% em reviews recentes.
+Sua retenção ficou acima de X% da comunidade.
+Usuários da sua área tiveram retenção média de X%.
+Na sua região, o uso médio de FSRS foi X%.
+Você usa X dos 10 addons mais populares da comunidade.
+```
+
+A aba também inclui gráficos locais, como:
+
+- composição de mídia;
+- distribuição dos botões de resposta;
+- evolução do semestre;
+- comparações com médias públicas quando disponíveis.
+
+---
 
 ## Dados enviados
 
-Não envia conteúdo de cards, notas, decks, campos, tags ou mídia. Envia agregados em faixas, perfil opcional e lista de addons instalados.
+O addon envia estatísticas agregadas e metadados técnicos. O objetivo é permitir análise da comunidade sem acessar conteúdo pessoal.
 
-Veja `privacy.md` para texto detalhado.
+Exemplos de dados coletados:
 
-# Deploy do backend Cloudflare
+- versão do Anki;
+- sistema operacional;
+- addons instalados;
+- quantidade aproximada de cards, notas, decks e tags;
+- uso de FSRS;
+- retenção;
+- revisões recentes;
+- dias estudados;
+- tempo aproximado de estudo;
+- proporção de mídia;
+- perfil opcional preenchido pelo usuário;
+- fingerprint agregado para apoiar deduplicação.
 
-## 1. Instale Node.js
+A maioria dos campos numéricos é enviada em faixas. Alguns percentuais, como retenção, podem ser enviados de forma mais granular quando isso for útil para análise.
 
-Instale Node.js LTS. Depois, no terminal:
+O dicionário completo dos campos está em:
+
+```text
+dicionario-dados-censo-anki-brasil.ods
+```
+
+---
+
+## Dados que não são enviados
+
+O addon **não envia**:
+
+- conteúdo de cards;
+- conteúdo de notas;
+- nomes de decks;
+- nomes de tags;
+- nomes de campos;
+- nomes de tipos de nota;
+- arquivos de mídia;
+- nomes de arquivos de mídia;
+- e-mail;
+- nome real;
+- login do AnkiWeb;
+- caminho local da coleção no computador.
+
+A política de privacidade está em:
+
+```text
+privacy.md
+```
+
+---
+
+## Identificação local e deduplicação
+
+Cada instalação gera um `user_id` anônimo salvo localmente.
+
+Além disso, o payload inclui um `usage_fingerprint`, calculado a partir de campos agregados e estáveis. Ele ajuda a estimar possíveis duplicidades, por exemplo quando uma pessoa usa Anki Desktop em mais de um computador.
+
+O fingerprint não substitui o `user_id`. Ele serve apenas para análise agregada.
+
+---
+
+## Backend
+
+O backend usa:
+
+- Cloudflare Worker;
+- Cloudflare D1;
+- endpoints HTTP;
+- validação básica de payload;
+- tabelas separadas para envio real e envio de debug.
+
+---
+
+## Endpoints públicos
+
+```text
+GET  /config        Configuração pública do censo atual
+POST /submit        Envio real do addon
+POST /debug-submit  Envio de teste da área de desenvolvedor
+GET  /results       Resultados públicos agregados em JSON
+GET  /results.html  Página HTML simples com resultados públicos
+```
+
+O endpoint `/results` é o principal ponto de acesso para análises externas, dashboards ou relatórios do censo.
+
+---
+
+## Deploy do backend
+
+Entre na pasta do Worker:
 
 ```bash
 cd worker
@@ -60,13 +214,13 @@ npm install
 npx wrangler login
 ```
 
-## 2. Crie o banco D1
+Crie o banco D1:
 
 ```bash
 npm run db:create
 ```
 
-A Cloudflare vai mostrar algo parecido com:
+A Cloudflare vai retornar um bloco parecido com:
 
 ```toml
 [[d1_databases]]
@@ -75,45 +229,35 @@ database_name = "censo-anki-brasil-db"
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
-Copie apenas o `database_id` e substitua em `worker/wrangler.toml` no campo:
+Copie o `database_id` e substitua o valor correspondente em:
 
-```toml
-database_id = "REPLACE_WITH_D1_DATABASE_ID_AFTER_CREATE"
+```text
+worker/wrangler.toml
 ```
 
-Isso é configuração de deploy, não código do addon.
-
-## 3. Crie as tabelas
+Crie as tabelas:
 
 ```bash
 npm run db:init
 ```
 
-## 4. Publique o Worker
+Publique o Worker:
 
 ```bash
 npm run deploy
 ```
 
-O Wrangler vai mostrar a URL pública, por exemplo:
+O Wrangler vai retornar uma URL pública no domínio `workers.dev`.
 
-```text
-https://censo-anki-brasil-api.SEUSUBDOMINIO.workers.dev
-```
+---
 
-Você não precisa ter domínio próprio. O domínio padrão `workers.dev` é suficiente.
+## Configuração da URL da API
 
-# Configurando a URL no addon sem mexer no código
+O addon vem com uma URL padrão definida no projeto.
 
-O pacote vem com uma URL padrão:
+Se for necessário usar outra API, há duas opções.
 
-```text
-https://censo-anki-brasil-api.danyelbarboza.workers.dev
-```
-
-Se a sua URL real for diferente, há duas opções sem alterar código Python:
-
-## Opção A: configurar pela interface do addon
+### Pela interface do addon
 
 No Anki Desktop:
 
@@ -121,9 +265,7 @@ No Anki Desktop:
 Ferramentas → Censo Anki Brasil → Configurações → URL da API
 ```
 
-Cole a URL do Worker e salve.
-
-## Opção B: gerar um pacote já com a URL certa
+### No build do pacote
 
 Na raiz do projeto:
 
@@ -131,38 +273,55 @@ Na raiz do projeto:
 python scripts/build_addon.py --api-url "https://censo-anki-brasil-api.SEUSUBDOMINIO.workers.dev"
 ```
 
-O arquivo `.ankiaddon` será criado em `dist/`. Isso altera apenas o `config.json` empacotado, não o código.
+O arquivo `.ankiaddon` será criado em:
 
-# Empacotando para AnkiWeb
+```text
+dist/
+```
+
+---
+
+## Empacotamento para AnkiWeb
+
+Na raiz do projeto:
 
 ```bash
 python scripts/build_addon.py --api-url "https://censo-anki-brasil-api.SEUSUBDOMINIO.workers.dev"
 ```
 
-Envie o arquivo `.ankiaddon` da pasta `dist/` para o AnkiWeb Add-ons.
+Depois, envie o arquivo `.ankiaddon` gerado em `dist/` para o AnkiWeb Add-ons.
 
-# Endpoints públicos
+---
 
-- `GET /config` configuração atual do censo
-- `POST /submit` envio real do addon
-- `POST /debug-submit` envio de teste da área de desenvolvedor
-- `GET /results` resultados agregados em JSON
-- `GET /results.html` página HTML simples com resultados públicos
+## Área de desenvolvedor
 
-# Área de desenvolvedor
+A área de desenvolvedor fica dentro do painel do addon.
 
-Senha: `4599`
+Senha padrão:
 
-Funções:
+```text
+4599
+```
 
-- Ver JSON final
-- Copiar JSON
-- Salvar JSON
-- Enviar JSON para `/debug-submit`
-- Resetar status local de envio
+Funções disponíveis:
 
-O endpoint de teste salva em tabela separada e não entra nos resultados públicos.
+- visualizar o JSON final;
+- copiar o JSON;
+- salvar o JSON;
+- enviar payload de teste para `/debug-submit`;
+- resetar o status local de envio.
 
-# Observações técnicas
+O envio de debug é salvo em tabela separada e não entra nos resultados públicos do censo.
 
-O backend usa Cloudflare D1. A documentação da Cloudflare descreve o D1 como banco SQL serverless compatível com convenções do SQLite e acessível via bindings do Worker. O Worker usa prepared statements para inserções e consultas.
+---
+
+## Licença e transparência
+
+O projeto é aberto para auditoria. A proposta é manter público:
+
+- código do addon;
+- código da API;
+- dicionário de dados;
+- política de privacidade;
+- endpoints públicos de resultado;
+- lógica geral de coleta e agregação.
