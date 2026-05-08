@@ -16,8 +16,8 @@ def current_survey_for_day(today: date | None = None):
     today = today or date.today()
     year = today.year
     windows = [
-        (f"anki-census-{year}-1", date(year, 6, 1), date(year, 6, 10)),
-        (f"anki-census-{year}-2", date(year, 12, 10), date(year, 12, 20)),
+        (f"census-anki-{year}-1", date(year, 6, 1), date(year, 6, 10)),
+        (f"census-anki-{year}-2", date(year, 12, 10), date(year, 12, 20)),
     ]
     for survey_id, start, end in windows:
         if start <= today <= end:
@@ -26,7 +26,7 @@ def current_survey_for_day(today: date | None = None):
             return {"survey_id": survey_id, "start": start, "end": end, "phase": "pre_reminder"}
     future = [(survey_id, start, end) for survey_id, start, end in windows if today <= end]
     if not future:
-        return {"survey_id": f"anki-census-{year + 1}-1", "start": date(year + 1, 6, 1), "end": date(year + 1, 6, 10), "phase": "none"}
+        return {"survey_id": f"census-anki-{year + 1}-1", "start": date(year + 1, 6, 1), "end": date(year + 1, 6, 10), "phase": "none"}
     survey_id, start, end = future[0]
     return {"survey_id": survey_id, "start": start, "end": end, "phase": "none"}
 

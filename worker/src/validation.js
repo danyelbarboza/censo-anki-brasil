@@ -12,7 +12,10 @@ export async function readAndValidateRequest(request) {
   try { payload = JSON.parse(text); } catch { return { error: [400, "invalid_json"] }; }
   if (!payload || typeof payload !== "object") return { error: [400, "invalid_payload"] };
   if (payload.schema_version !== SCHEMA_VERSION) return { error: [400, "unsupported_schema_version"] };
-  if (!/^anki-census-\d{4}-[12]$/.test(payload.survey_id || "")) return { error: [400, "invalid_survey_id"] };
+  const surveyId = String(payload.survey_id || "");
+  const isNew = /^census-anki-\d{4}-[12]$/.test(surveyId);
+  const isLegacy = /^anki-census-\d{4}-[12]$/.test(surveyId) || /^censo-anki-brasil-\d{4}-[12]$/.test(surveyId);
+  if (!(isNew || isLegacy)) return { error: [400, "invalid_survey_id"] };
   if (!/^[A-Z2-9]{10}$/.test(payload.user_id || "")) return { error: [400, "invalid_user_id"] };
   const cleaned = {};
   for (const [k, v] of Object.entries(payload)) {

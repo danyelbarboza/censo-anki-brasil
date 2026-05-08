@@ -14,5 +14,5 @@ NEW_GLOBAL_STATE_ATTR = "_anki_census_global_state"
 OLD_GLOBAL_COLLECTOR_ATTR = "_anki_census_legacy_global_collector"
 OLD_GLOBAL_STATE_ATTR = "_anki_census_legacy_global_state"
 
-SURVEY_ID_PREFIX = "anki-census"
+SURVEY_ID_PREFIX = "census-anki"
 LEGACY_SURVEY_ID_PREFIX = "anki-census-legacy"
