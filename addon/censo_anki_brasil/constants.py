@@ -1,5 +1,5 @@
 ADDON_NAME = "Censo Anki Brasil"
-ADDON_VERSION = "0.1.4"
+ADDON_VERSION = "0.1.12"
 SCHEMA_VERSION = "1.0.0"
 AUTHOR = "Danyel Barboza - Comunidade Anki Brasil"
 DEFAULT_API_BASE_URL = "https://censo-anki-brasil-api.danyelbarboza.workers.dev"

@@ -32,7 +32,7 @@ class MainWindow(QDialog):
         self.dev = DeveloperTab()
         self.about = AboutTab()
 
-        self.tabs.addTab(self.summary, "Resumo")
+        self.tabs.addTab(self.summary, "Meu Anki")
         self.tabs.addTab(self.profile, "Perfil")
         self.tabs.addTab(self.data, "Dados coletados")
         self.tabs.addTab(self.addons, "Addons")

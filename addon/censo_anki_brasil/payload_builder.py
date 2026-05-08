@@ -124,6 +124,8 @@ def _stabilize_fingerprint_source(source: dict) -> dict:
     for period in (stable.get("activity") or {}).values():
         if isinstance(period, dict) and "retention_bucket" in period:
             period["retention_bucket"] = _stable_percent_bucket(period.get("retention_bucket"))
+        if isinstance(period, dict) and "study_days_bucket" in period:
+            period["study_days_bucket"] = _coarse_count_label_for_hash(period.get("study_days_bucket"))
 
     # These collection fields can legitimately drift between two desktops opened
     # days apart. They still enter the hash, but in a coarser/stable form.
@@ -158,6 +160,7 @@ def _build_usage_fingerprint_source(payload: dict) -> dict:
     """
     activity = deepcopy(payload.get("activity") or {})
     activity.pop("last_30_days", None)
+    activity.pop("semester_months", None)
 
     source = {
         "collection": deepcopy(payload.get("collection") or {}),
