@@ -1,20 +1,22 @@
-# Embedding Settings Tab Recommendation
+﻿# Embedding Settings Tab Recommendation
 
-This note describes a minimal, user-friendly way to expose Anki Census controls in any host add-on.
+This note describes the recommended way to expose Anki Census controls in any host add-on.
 
 ## Goal
 
 Keep integration zero-config while giving users clear control over global participation.
 
-## Recommended UI (brief)
+## Recommended UI
 
-Add a small "Anki Census" section inside your existing settings/config dialog:
+Create a dedicated **Anki Census** tab in your existing settings/config window.
+
+Inside that tab, keep the UI minimal:
 
 1. One short description line
 2. One checkbox: "Pause participation globally"
 3. One button: "View census status"
 
-Do not create a heavy standalone UI unless your add-on needs it.
+Do not build a heavy standalone UI unless your add-on specifically needs it.
 
 ## Suggested behavior
 
