@@ -68,7 +68,7 @@ def _coarse_count_label_for_hash(value):
     """Normalize volatile count buckets inside the fingerprint only."""
     if not isinstance(value, str):
         return value
-    if value in {"unknown", "sem limite"}:
+    if value in {"unknown", "unlimited"}:
         return value
     if value == "0":
         return "0"
@@ -178,3 +178,4 @@ def build_payload(survey_id: str, mode: str = "real") -> dict:
     payload["analysis"] = _build_analysis(payload)
     payload["client_version"] = CLIENT_VERSION
     return payload
+

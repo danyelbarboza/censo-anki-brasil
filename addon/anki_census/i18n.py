@@ -26,6 +26,6 @@ STRINGS = {
 }
 
 
-def t(key, lang="pt_BR"):
-    """Return translated strings with fallback to Brazilian Portuguese."""
-    return STRINGS.get(lang, STRINGS["pt_BR"]).get(key, STRINGS["pt_BR"].get(key, key))
+def t(key, lang="en"):
+    """Return translated strings with fallback to English."""
+    return STRINGS.get(lang, STRINGS["en"]).get(key, STRINGS["en"].get(key, key))

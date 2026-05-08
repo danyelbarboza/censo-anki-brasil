@@ -1,5 +1,4 @@
-from aqt.qt import QLabel, QVBoxLayout, QWidget
-
+from aqt.qt import QWidget, QVBoxLayout, QLabel
 from ..constants import ADDON_NAME, ADDON_VERSION, AUTHOR
 
 
@@ -13,10 +12,10 @@ class AboutTab(QWidget):
         text = QLabel(
             f"""
 <h2>{ADDON_NAME}</h2>
-<p><b>Versão:</b> {ADDON_VERSION}<br><b>Autor:</b> {AUTHOR}</p>
-<p>Este addon participa automaticamente do Anki Census durante as janelas semestrais de coleta, exceto se a participação estiver pausada nas configurações.</p>
-<p><b>O que não é enviado:</b> conteúdo de cards, notas, campos, tags, nomes de decks, nomes de arquivos de mídia, e-mail, nome real, login AnkiWeb ou caminho local da coleção.</p>
-<p><b>O que é enviado:</b> dados agregados em faixas, lista de addons, informações de ambiente, perfil opcional e estatísticas gerais da coleção local sincronizada.</p>
+<p><b>Version:</b> {ADDON_VERSION}<br><b>Author:</b> {AUTHOR}</p>
+<p>This add-on participates automatically in Anki Census during semester collection windows, unless participation is paused in settings.</p>
+<p><b>Not sent:</b> card content, note content, field names, tag names, deck names, media file names, email, real name, AnkiWeb login, or local collection path.</p>
+<p><b>Sent:</b> aggregated bucketed stats, installed add-ons, environment metadata, optional profile values, and high-level collection usage stats.</p>
 """
         )
         text.setWordWrap(True)

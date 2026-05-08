@@ -20,7 +20,7 @@ def _welcome_if_needed():
     cfg = load_config()
     if cfg.get("local_state", {}).get("first_run_completed"):
         return False
-    lang = cfg.get("language", "pt_BR")
+    lang = cfg.get("language", "en")
     QMessageBox.information(mw, t("welcome_title", lang), t("welcome_text", lang))
     mark_first_run_completed()
     _open_main_window(initial_tab="profile")
@@ -51,3 +51,4 @@ def init(addon_module_name: str):
         source_addon_version=storage.load_config().get("addon_version", "0.1.12"),
         startup_callback=startup,
     )
+

@@ -12,7 +12,10 @@ _window = None
 
 
 class MainWindow(QDialog):
+    """Main multi-tab window for Anki Census."""
+
     def __init__(self, parent=None, initial_tab=None):
+        """Create and populate all tabs."""
         super().__init__(parent)
         self.setWindowTitle("Anki Census")
         self.resize(980, 720)
@@ -32,13 +35,13 @@ class MainWindow(QDialog):
         self.dev = DeveloperTab()
         self.about = AboutTab()
 
-        self.tabs.addTab(self.summary, "Meu Anki")
-        self.tabs.addTab(self.profile, "Perfil")
-        self.tabs.addTab(self.data, "Dados coletados")
-        self.tabs.addTab(self.addons, "Addons")
-        self.tabs.addTab(self.settings, "Configurações")
-        self.tabs.addTab(self.dev, "Desenvolvedor")
-        self.tabs.addTab(self.about, "Sobre / Privacidade")
+        self.tabs.addTab(self.summary, "My Anki")
+        self.tabs.addTab(self.profile, "Profile")
+        self.tabs.addTab(self.data, "Collected data")
+        self.tabs.addTab(self.addons, "Add-ons")
+        self.tabs.addTab(self.settings, "Settings")
+        self.tabs.addTab(self.dev, "Developer")
+        self.tabs.addTab(self.about, "About / Privacy")
         layout.addWidget(self.tabs)
 
         if initial_tab:
@@ -47,6 +50,7 @@ class MainWindow(QDialog):
 
 
 def show_main_window(initial_tab=None):
+    """Show a singleton main window instance."""
     global _window
     if _window is not None:
         try:

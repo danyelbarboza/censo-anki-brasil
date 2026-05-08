@@ -10,22 +10,38 @@ USER_ID_LENGTH = 10
 SUPPORTED_SCHEMA_VERSIONS = [SCHEMA_VERSION]
 
 PRIMARY_AREAS = [
-    "", "Medicina", "Enfermagem", "Odontologia", "Psicologia", "Farmácia", "Fisioterapia",
-    "Outras áreas da saúde", "Idiomas", "Inglês", "Espanhol", "Francês", "Alemão",
-    "Japonês", "Coreano", "Chinês", "Outros idiomas", "Concursos públicos", "Direito",
-    "OAB", "ENEM/Vestibular", "Faculdade/Escola", "Programação/TI", "Engenharia",
-    "Matemática", "Estatística", "Ciência de dados", "Economia/Finanças", "História",
-    "Filosofia", "Teologia/Estudos religiosos", "Música", "Xadrez", "Estudos pessoais",
-    "Outro", "Prefiro não informar"
+    "", "Medicine", "Nursing", "Dentistry", "Psychology", "Pharmacy", "Physiotherapy",
+    "Other health fields", "Languages", "English", "Spanish", "French", "German",
+    "Japanese", "Korean", "Chinese", "Other languages", "Public service exams", "Law",
+    "Bar exam", "College entrance exams", "School/College", "Programming/IT", "Engineering",
+    "Mathematics", "Statistics", "Data science", "Economics/Finance", "History",
+    "Philosophy", "Theology/Religious studies", "Music", "Chess", "Personal studies",
+    "Other", "Prefer not to say",
 ]
+
 COUNTRIES = [
-    "", "Brazil", "Portugal", "Angola", "Moçambique", "Cabo Verde", "Guiné-Bissau",
-    "São Tomé e Príncipe", "Timor-Leste", "Estados Unidos", "Canadá", "Reino Unido",
-    "Alemanha", "França", "Espanha", "Itália", "Argentina", "Chile", "Uruguai",
-    "Paraguai", "Outro país", "Prefiro não informar"
+    "", "Brazil", "Portugal", "Angola", "Mozambique", "Cape Verde", "Guinea-Bissau",
+    "Sao Tome and Principe", "Timor-Leste", "United States", "Canada", "United Kingdom",
+    "Germany", "France", "Spain", "Italy", "Argentina", "Chile", "Uruguay",
+    "Paraguay", "Other country", "Prefer not to say",
 ]
-BRAZIL_STATES = ["", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO", "Prefiro não informar"]
-EXPERIENCE_BUCKETS = ["", "Menos de 1 mês", "1 a 6 meses", "6 meses a 1 ano", "1 a 3 anos", "3 a 5 anos", "Mais de 5 anos", "Prefiro não informar"]
-LEVELS = ["", "Iniciante", "Intermediário", "Avançado", "Usuário técnico", "Crio templates/scripts/addons", "Prefiro não informar"]
-AGE_BUCKETS = ["", "Menos de 18", "18–24", "25–34", "35–44", "45–54", "55+", "Prefiro não informar"]
+
+BRAZIL_STATES = [
+    "", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG",
+    "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+    "Prefer not to say",
+]
+
+EXPERIENCE_BUCKETS = [
+    "", "Less than 1 month", "1 to 6 months", "6 months to 1 year", "1 to 3 years",
+    "3 to 5 years", "More than 5 years", "Prefer not to say",
+]
+
+LEVELS = [
+    "", "Beginner", "Intermediate", "Advanced", "Technical user",
+    "I build templates/scripts/add-ons", "Prefer not to say",
+]
+
+AGE_BUCKETS = ["", "Under 18", "18-24", "25-34", "35-44", "45-54", "55+", "Prefer not to say"]
+
 PLATFORMS = ["Anki Desktop", "AnkiDroid", "AnkiMobile iOS", "AnkiWeb"]

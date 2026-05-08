@@ -18,7 +18,7 @@ def _reviews_limit_bucket(n):
     except Exception:
         return "unknown"
     if n <= 0 or n >= 9999:
-        return "sem limite"
+        return "unlimited"
     return bucket_number(n, REVIEWS_LIMIT_BUCKETS)
 
 def _as_bool_marker(value):
@@ -134,3 +134,4 @@ def collect_scheduling():
         "max_reviews_per_day_bucket": _reviews_limit_bucket(max(rev_values) if rev_values else 0),
         "deck_preset_count_bucket": bucket_number(preset_count, COUNT_BUCKETS_SMALL),
     }
+

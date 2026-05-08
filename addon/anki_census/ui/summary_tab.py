@@ -559,14 +559,14 @@ BADGE_RULES = [
     ("Engenheiro do FSRS", {"FSRS ativo", "FSRS quase total", "Retenção alta", "Baixo Again", "Consistente"}),
     ("Bibliotecário Caótico", {"Coleção gigante", "Muitos decks", "Muitas tags", "Muitos novos", "Suspensos altos"}),
     ("Monge da Retenção", {"Retenção alta", "Baixo Again", "Consistente", "FSRS ativo", "Rápido"}),
-    ("DJ do TTS", {"Áudio forte", "Muitos arquivos", "Idiomas", "HyperTTS", "TTS/voz"}),
+    ("DJ do TTS", {"Áudio forte", "Muitos arquivos", "Languages", "HyperTTS", "TTS/voz"}),
     ("Cientista do Anki", {"Ciência de dados", "Técnico", "Automação", "IA", "AnkiConnect"}),
     ("Mestre dos Addons", {"Muitos addons", "FSRS Helper", "Review Heatmap", "AnkiConnect", "Automação"}),
     ("Velocista Cognitivo", {"Rápido", "Muitos reviews", "Easy alto", "Retenção alta", "Consistente"}),
     ("Maratonista de Revisões", {"Muitos reviews", "Muito tempo", "Consistente", "180 dias forte", "Retenção alta"}),
     ("Curador de Biblioteca", {"Muitos novos", "Suspensos altos", "Muitas tags", "Coleção gigante", "Muitos tipos"}),
     ("Professor Pardal do Anki", {"Técnico", "JavaScript", "CSS", "Templates customizados", "Automação"}),
-    ("Explorador Multilíngue", {"Idiomas", "Áudio forte", "TTS/voz", "AnkiDroid", "Consistente"}),
+    ("Explorador Multilíngue", {"Languages", "Áudio forte", "TTS/voz", "AnkiDroid", "Consistente"}),
     ("Treinador de Algoritmo", {"FSRS ativo", "FSRS Helper", "Retenção alta", "Baixo Again", "Hard controlado"}),
     ("Acumulador Profissional", {"Coleção gigante", "Muitos novos", "Suspensos altos", "Muitos decks", "Muitos arquivos"}),
     ("Usuário Turbo", {"Muitos reviews", "Rápido", "Easy alto", "Muito tempo", "Consistente"}),
@@ -794,12 +794,12 @@ class SummaryTab(QWidget):
         add("Áudio forte", 85 if (_parse_percent(m.get("notes_with_audio_ratio_bucket")) or 0) >= 25 else 0, "muitas notas com áudio")
         add("Muitos arquivos", 75 if _extract_first_number(m.get("media_file_count_bucket")) >= 50000 else 0, "pasta de mídia enorme")
         add("Visual", 45 if (_parse_percent(m.get("notes_with_images_ratio_bucket")) or 0) >= 10 else 0, "uso relevante de imagens")
-        add("Técnico", 65 if profile.get("self_assessed_level") in {"Usuário técnico", "Crio templates/scripts/addons"} else 0, "perfil técnico declarado")
+        add("Técnico", 65 if profile.get("self_assessed_level") in {"Usuário técnico", "I build templates/scripts/add-ons"} else 0, "perfil técnico declarado")
         add("Templates customizados", 60 if _extract_first_number(templates.get("card_template_count_bucket")) >= 50 else 0, "muitos modelos de card")
         add("JavaScript", 65 if templates.get("uses_javascript_in_templates") else 0, "JavaScript em templates")
         add("CSS", 55 if templates.get("uses_css_customization") else 0, "CSS customizado")
         add("Muitos tipos", 55 if _extract_first_number(templates.get("note_type_count_bucket")) >= 30 else 0, "muitos tipos de nota")
-        add("Idiomas", 55 if any(x in str(profile.get("secondary_areas", [])) for x in ["Inglês", "Espanhol", "Francês", "Idiomas"]) or profile.get("primary_area") in {"Idiomas", "Inglês", "Espanhol", "Francês"} else 0, "uso ligado a idiomas")
+        add("Languages", 55 if any(x in str(profile.get("secondary_areas", [])) for x in ["Inglês", "Spanish", "Francês", "Languages"]) or profile.get("primary_area") in {"Languages", "Inglês", "Spanish", "Francês"} else 0, "uso ligado a idiomas")
         add("Ciência de dados", 50 if profile.get("primary_area") == "Ciência de dados" else 0, "área de dados")
         add("AnkiDroid", 40 if "AnkiDroid" in (profile.get("platforms_used") or []) else 0, "usa também no Android")
         add("AnkiConnect", 55 if "ankiconnect" in addon_names else 0, "integração externa")
@@ -1225,3 +1225,4 @@ class SummaryTab(QWidget):
         painter.end()
         out = hi.scaled(1080, 1350, Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.SmoothTransformation)
         out.save(path)
+

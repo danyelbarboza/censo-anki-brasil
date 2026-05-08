@@ -24,7 +24,7 @@ GLOBAL_KEYS = {
 
 DEFAULT_CONFIG = {
     "api_base_url": DEFAULT_API_BASE_URL,
-    "language": "pt_BR",
+    "language": "en",
     "addon_version": ADDON_VERSION,
     "participation_paused": False,
     "user_id": "",

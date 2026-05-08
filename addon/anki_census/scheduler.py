@@ -34,7 +34,7 @@ def current_survey_for_day(today: date | None = None):
 def show_profile_reminder(phase_info):
     """Show reminder dialogs before and during survey windows."""
     cfg = load_config()
-    lang = cfg.get("language", "pt_BR")
+    lang = cfg.get("language", "en")
     survey_id = phase_info["survey_id"]
     phase = phase_info["phase"]
     if was_reminder_shown(survey_id, phase):
@@ -98,3 +98,4 @@ def run_startup_tasks():
     if info["phase"] in ("pre_reminder", "collection"):
         show_profile_reminder(info)
     QTimer.singleShot(3000, lambda: silent_submit_if_needed(info))
+

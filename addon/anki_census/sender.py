@@ -14,7 +14,7 @@ def _base_url():
 def post_json(path: str, payload: dict, timeout=20) -> dict:
     base = _base_url()
     if not base:
-        raise RuntimeError("URL da API não configurada")
+        raise RuntimeError("API URL is not configured")
     data = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     req = urllib.request.Request(
         base + path,
@@ -33,13 +33,13 @@ def post_json(path: str, payload: dict, timeout=20) -> dict:
             return json.loads(body or "{}")
     except urllib.error.HTTPError as e:
         body = e.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Servidor retornou erro {e.code}: {body[:300]}")
+        raise RuntimeError(f"Server returned error {e.code}: {body[:300]}")
 
 
 def get_json(path: str, timeout=12) -> dict:
     base = _base_url()
     if not base:
-        raise RuntimeError("URL da API não configurada")
+        raise RuntimeError("API URL is not configured")
     req = urllib.request.Request(
         base + path,
         headers={
@@ -55,7 +55,7 @@ def get_json(path: str, timeout=12) -> dict:
             return json.loads(body or "{}")
     except urllib.error.HTTPError as e:
         body = e.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Servidor retornou erro {e.code}: {body[:300]}")
+        raise RuntimeError(f"Server returned error {e.code}: {body[:300]}")
 
 
 def submit_payload(payload: dict) -> dict:
@@ -68,3 +68,5 @@ def submit_debug_payload(payload: dict) -> dict:
 
 def fetch_public_results() -> dict:
     return get_json("/results")
+
+
