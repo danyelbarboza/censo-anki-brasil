@@ -26,6 +26,9 @@ A tela principal, **Meu Anki**, mostra um resumo técnico do uso local do Anki:
 - perfil de uso gerado a partir dos dados agregados;
 - comparações com a comunidade quando os resultados públicos estiverem disponíveis.
 
+<img src="screenshots/meu-anki.png" alt="Tela principal do Meu Anki - Censo Anki Brasil" width="800">
+<img src="screenshots/perfil.png" alt="Tela de perfil do Censo Anki Brasil" width="800">
+
 Depois da coleta, o painel também pode exibir percentis e comparações do usuário com a base agregada do censo, como:
 
 - posição em reviews recentes;
